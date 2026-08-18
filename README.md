@@ -45,7 +45,6 @@ The `/predict` endpoint will accept four numerical input values: sepal length, s
 
 ## Request Flow
 
-```mermaid
 flowchart LR
     A[Client Request] --> B[Input Validation]
     B --> C[Machine Learning Model]
