@@ -1,4 +1,6 @@
-# Iris ML API
+# ML Model Deployment as a Monitored REST API
+
+## Iris ML API
 
 ## Project Overview
 
