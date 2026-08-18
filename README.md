@@ -45,7 +45,12 @@ The `/predict` endpoint will accept four numerical input values: sepal length, s
 
 ## Request Flow
 
-Client Request → Input Validation → Machine Learning Model → Prediction → API Response
+```mermaid
+flowchart LR
+    A[Client Request] --> B[Input Validation]
+    B --> C[Machine Learning Model]
+    C --> D[Prediction]
+    D --> E[API Response]
 
 In our own words, the client first sends the flower measurements to the `/predict` endpoint. The API checks and validates the input values. If the values are valid, they are passed to the trained machine learning model. The model predicts the Iris flower species, and the API returns the prediction as the response.
 
