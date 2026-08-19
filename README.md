@@ -8,7 +8,7 @@ This project will build a simple REST API that uses a machine learning model to 
 
 ## Dataset
 
-The project uses the Iris dataset provided by scikit-learn.
+The project uses the Iris dataset provided as a CSV file for this project.
 
 The dataset contains four input features:
 
@@ -44,17 +44,9 @@ The `/predict` endpoint will accept four numerical input values: sepal length, s
   "prediction": "setosa"
 }
 
-
 ## Request Flow
 
-
-```mermaid
-flowchart LR
-    A[Client Request] --> B[Input Validation]
-    B --> C[Machine Learning Model]
-    C --> D[Prediction]
-    D --> E[API Response]
-```
+Client Request → Input Validation → Machine Learning Model → Prediction → API Response
 
 In our own words, the client first sends the flower measurements to the `/predict` endpoint. The API checks and validates the input values. If the values are valid, they are passed to the trained machine learning model. The model predicts the Iris flower species, and the API returns the prediction as the response.
 
@@ -65,3 +57,5 @@ The goal of this project is to build a simple and reliable machine learning API.
 ## Future Work
 
 The next task will set up the project folder structure and Python environment.
+
+
