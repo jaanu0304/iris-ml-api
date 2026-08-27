@@ -1,10 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 import joblib
 import numpy as np
 import uuid
-from app.models.schemas import PredictionInput
-
+from app.models.schemas import PredictionInput, PredictionOutput
 
 model = None
 
@@ -21,7 +21,14 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-
+@app.exception_handler(ValueError)
+async def value_error_handler(request: Request, exc: ValueError):
+    return JSONResponse(
+        status_code=500,
+        content={
+            "detail": "An internal value error occurred"
+        }
+    )
 
 
 @app.get("/")
@@ -41,7 +48,7 @@ def health():
 
 
 
-@app.post("/predict")
+@app.post("/predict", response_model=PredictionOutput)
 def predict(data: PredictionInput):
     features = np.array([[
         data.sepal_length,
@@ -50,14 +57,21 @@ def predict(data: PredictionInput):
         data.petal_width
     ]])
 
-    prediction = model.predict(features)[0]
-
-    confidence = model.predict_proba(features).max()
+    try:
+        prediction = model.predict(features)[0]
+        confidence = model.predict_proba(features).max()
+    except Exception as e:
+        print(f"Prediction error: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail="Prediction failed"
+        )
 
     request_id = str(uuid.uuid4())
 
     return {
         "prediction": prediction,
         "confidence": float(confidence),
+        "model_version": "1.0",
         "request_id": request_id
     }

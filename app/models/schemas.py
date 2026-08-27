@@ -6,3 +6,11 @@ class PredictionInput(BaseModel):
     sepal_width: float = Field(..., gt=0, description="Must be positive")
     petal_length: float = Field(..., gt=0, description="Must be positive")
     petal_width: float = Field(..., gt=0, description="Must be positive")
+
+
+
+class PredictionOutput(BaseModel):
+    prediction: str
+    confidence: float
+    model_version: str
+    request_id: str
