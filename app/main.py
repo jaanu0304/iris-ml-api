@@ -1,12 +1,13 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 import joblib
-import numpy as np
+
 import uuid
 import time
-from app.models.schemas import PredictionInput, PredictionOutput
+
 from app.logging_config import setup_logging
+from app.routers.v1 import router as v1_router
 
 model = None
 logger = setup_logging()
@@ -23,6 +24,10 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+
+app.state.logger = logger
+
+app.include_router(v1_router)
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
@@ -57,57 +62,7 @@ async def value_error_handler(request: Request, exc: ValueError):
     )
 
 
-@app.get("/")
-def root():
-    return {"message": "ML API is alive"}
-
-
-
-@app.get("/health")
-def health():
-    return {
-        "status": "ok",
-        "model_loaded": model is not None
-    }
 
 
 
 
-
-@app.post("/predict", response_model=PredictionOutput)
-def predict(data: PredictionInput, request: Request):
-    features = np.array([[
-        data.sepal_length,
-        data.sepal_width,
-        data.petal_length,
-        data.petal_width
-    ]])
-
-    try:
-        prediction = model.predict(features)[0]
-        confidence = model.predict_proba(features).max()
-    except Exception as e:
-        logger.error(
-            f"request_id={request.state.request_id} "
-            f"prediction_failed=true "
-            f"error={e}"
-        )
-        raise HTTPException(
-            status_code=500,
-            detail="Prediction failed"
-        )
-
-    request_id = request.state.request_id
-
-    logger.info(
-        f"request_id={request_id} "
-        f"prediction_success=true "
-        f"prediction={prediction}"
-    )
-
-    return {
-        "prediction": prediction,
-        "confidence": float(confidence),
-        "model_version": "1.0",
-        "request_id": request_id
-    }
