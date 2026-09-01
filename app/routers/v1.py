@@ -8,6 +8,7 @@ from app.models.schemas import (
     PredictionBatchInput,
     PredictionBatchOutput
 )
+from app.config import settings
 
 
 router = APIRouter(prefix="/api/v1")
@@ -27,7 +28,7 @@ def health(request: Request):
 def model_info(request: Request):
     import json
 
-    metadata_path = "ml/saved_model/model_metadata.json"
+    metadata_path = settings.MODEL_METADATA_PATH
 
     try:
         with open(metadata_path, "r") as file:
@@ -97,7 +98,7 @@ def predict(data: PredictionInput, request: Request):
     return {
         "prediction": prediction,
         "confidence": float(confidence),
-        "model_version": "1.0",
+        "model_version": settings.MODEL_VERSION,
         "request_id": request_id
     }
 
@@ -112,6 +113,19 @@ def predict_batch(data: PredictionBatchInput, request: Request):
     start_time = time.perf_counter()
 
     batch_size = len(data.inputs)
+
+    if batch_size > settings.MAX_BATCH_SIZE:
+        logger.warning(
+            f"request_id={request_id} "
+            f"batch_prediction_rejected=true "
+            f"batch_size={batch_size} "
+            f"max_batch_size={settings.MAX_BATCH_SIZE}"
+        )
+
+        raise HTTPException(
+            status_code=400,
+            detail=f"Batch size cannot exceed {settings.MAX_BATCH_SIZE}"
+        )
 
     logger.info(
         f"request_id={request_id} "
@@ -160,7 +174,7 @@ def predict_batch(data: PredictionBatchInput, request: Request):
             PredictionOutput(
                 prediction=str(prediction),
                 confidence=float(confidence),
-                model_version="1.0",
+                model_version=settings.MODEL_VERSION,
                 request_id=request_id
             )
         )

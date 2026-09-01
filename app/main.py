@@ -8,6 +8,7 @@ import time
 
 from app.logging_config import setup_logging
 from app.routers.v1 import router as v1_router
+from app.config import settings
 
 model = None
 logger = setup_logging()
@@ -17,13 +18,16 @@ logger = setup_logging()
 async def lifespan(app: FastAPI):
     global model
 
-    model = joblib.load("ml/saved_model/model.joblib")
+    model = joblib.load(settings.MODEL_PATH)
     logger.info("ML model loaded successfully")
 
     yield
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    title=settings.API_TITLE,
+    lifespan=lifespan
+)
 
 app.state.logger = logger
 

@@ -2,6 +2,8 @@ from typing import List
 
 from pydantic import BaseModel, Field
 
+from app.config import settings
+
 
 class PredictionInput(BaseModel):
 
@@ -30,8 +32,8 @@ class PredictionBatchInput(BaseModel):
     inputs: List[PredictionInput] = Field(
         ...,
         min_length=1,
-        max_length=100,
-        description="List of 1 to 100 prediction inputs"
+        max_length=settings.MAX_BATCH_SIZE,
+        description="List of prediction inputs within the configured batch size limit"
     )
 
 

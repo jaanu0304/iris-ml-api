@@ -2,14 +2,15 @@ import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
+from app.config import settings
 
 def setup_logging():
     log_dir = Path("logs")
     log_dir.mkdir(exist_ok=True)
 
     logger = logging.getLogger("iris_api")
-    logger.setLevel(logging.INFO)
-
+    logger.setLevel(getattr(logging, settings.LOG_LEVEL.upper()))
+    
     formatter = logging.Formatter(
         "%(asctime)s | %(levelname)s | %(message)s"
     )
