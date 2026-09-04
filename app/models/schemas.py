@@ -27,6 +27,17 @@ class PredictionOutput(BaseModel):
     request_id: str
 
 
+class V2PredictionOutput(BaseModel):
+
+    prediction: str
+
+    probabilities: dict[str, float]
+
+    model_version: str
+
+    request_id: str
+
+
 class PredictionBatchInput(BaseModel):
 
     inputs: List[PredictionInput] = Field(
