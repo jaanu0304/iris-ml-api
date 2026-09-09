@@ -59,3 +59,57 @@ The goal of this project is to build a simple and reliable machine learning API.
 The next task will set up the project folder structure and Python environment.
 
 
+## How to Run This Project
+
+### Using Docker Compose
+
+Make sure Docker Desktop is running.
+
+From the project root directory, run:
+
+```bash
+docker compose up --build
+```
+
+
+The API will be available at:
+
+http://localhost:8000
+
+Swagger API documentation:
+
+http://localhost:8000/docs
+
+### Run Without Rebuilding
+
+After the image has already been built, the application can be started with:
+
+```bash
+docker compose up 
+```
+
+### Stop the Application
+
+Press:
+
+```text
+Ctrl + C
+```
+
+to stop the running containers.
+
+To remove the containers and network:
+
+```bash
+docker compose down
+```
+
+### Environment Variables
+
+Environment variables are loaded from the `.env` file using Docker Compose.
+
+The environment variables are not hardcoded in the `docker-compose.yml` file.
+
+### Model Volume
+
+The `ml/saved_model/` directory is mounted into the container so that the trained model can be replaced or updated without rebuilding the entire Docker image.
