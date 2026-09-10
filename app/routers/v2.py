@@ -1,11 +1,16 @@
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Depends
 import numpy as np
 
 from app.models.schemas import PredictionInput, V2PredictionOutput
 from app.config import settings
+from app.security import verify_api_key
 
 
-router = APIRouter(prefix="/api/v2")
+
+router = APIRouter(
+    prefix="/api/v2",
+    dependencies=[Depends(verify_api_key)]
+)
 
 
 @router.post("/predict", response_model=V2PredictionOutput)

@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = "INFO"
     MAX_BATCH_SIZE: int = 100
     API_TITLE: str = "Iris ML API"
+    API_KEY: str
 
     model_config = SettingsConfigDict(
         env_file=".env",

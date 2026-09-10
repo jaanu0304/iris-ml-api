@@ -1,11 +1,13 @@
 from typing import List
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.config import settings
 
 
 class PredictionInput(BaseModel):
+
+    model_config = ConfigDict(extra="forbid")
 
     sepal_length: float = Field(..., gt=0, description="Must be positive")
 
@@ -39,6 +41,9 @@ class V2PredictionOutput(BaseModel):
 
 
 class PredictionBatchInput(BaseModel):
+
+    model_config = ConfigDict(extra="forbid")
+
 
     inputs: List[PredictionInput] = Field(
         ...,

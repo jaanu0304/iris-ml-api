@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Depends
 import numpy as np
 import time
 
@@ -11,7 +11,12 @@ from app.models.schemas import (
 from app.config import settings
 
 
-router = APIRouter(prefix="/api/v1")
+from app.security import verify_api_key
+
+router = APIRouter(
+    prefix="/api/v1",
+    dependencies=[Depends(verify_api_key)]
+)
 
 
 @router.get("/health")
