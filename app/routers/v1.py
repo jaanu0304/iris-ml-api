@@ -12,6 +12,13 @@ from app.config import settings
 
 
 from app.security import verify_api_key
+from prometheus_client import Counter
+
+prediction_counter = Counter(
+    "ml_predictions_total",
+    "Total number of successful ML predictions",
+    ["predicted_class"]
+)
 
 router = APIRouter(
     prefix="/api/v1",
@@ -99,6 +106,8 @@ def predict(data: PredictionInput, request: Request):
         f"prediction_success=true "
         f"prediction={prediction}"
     )
+
+    prediction_counter.labels(predicted_class=str(prediction)).inc()
 
     return {
         "prediction": prediction,

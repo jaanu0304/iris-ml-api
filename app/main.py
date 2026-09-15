@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
+from prometheus_fastapi_instrumentator import Instrumentator
 import joblib
 
 import uuid
@@ -30,6 +31,8 @@ app = FastAPI(
     title=settings.API_TITLE,
     lifespan=lifespan
 )
+
+Instrumentator().instrument(app).expose(app)
 
 
 app.add_middleware(
