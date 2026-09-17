@@ -21,8 +21,7 @@ prediction_counter = Counter(
 )
 
 router = APIRouter(
-    prefix="/api/v1",
-    dependencies=[Depends(verify_api_key)]
+    prefix="/api/v1"
 )
 
 
@@ -36,7 +35,7 @@ def health(request: Request):
     }
 
 
-@router.get("/model-info")
+@router.get("/model-info", dependencies=[Depends(verify_api_key)])
 def model_info(request: Request):
     import json
 
@@ -69,7 +68,7 @@ def model_info(request: Request):
             detail="Unable to load model metadata"
         )
 
-@router.post("/predict", response_model=PredictionOutput)
+@router.post("/predict", response_model=PredictionOutput, dependencies=[Depends(verify_api_key)])
 def predict(data: PredictionInput, request: Request):
     from app.main import model
 
@@ -117,7 +116,7 @@ def predict(data: PredictionInput, request: Request):
     }
 
 
-@router.post("/predict-batch", response_model=PredictionBatchOutput)
+@router.post("/predict-batch", response_model=PredictionBatchOutput, dependencies=[Depends(verify_api_key)])
 def predict_batch(data: PredictionBatchInput, request: Request):
     from app.main import model
 
