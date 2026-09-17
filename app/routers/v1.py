@@ -207,8 +207,3 @@ def predict_batch(data: PredictionBatchInput, request: Request):
     }
 
 
-# V2 plan:
-# If /api/v2/predict is introduced, it should use a separate router
-# and separate Pydantic response schema.
-# Existing v1 clients will continue using the unchanged v1 contract.
-# New fields can be added to the v2 response without breaking v1 clients.
